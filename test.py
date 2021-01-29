@@ -23,18 +23,19 @@ def find_and_move(profiles: str, apk_files: str, dest_dir: str) -> list:
             if 'json' == name.split('.')[-1]:
                 with open(root + '/' + name, 'r') as f:
                     profile = json.load(f)
-                    print(profile.keys())
+                    # print(profile.keys())
                     if ('lib_matches' in profile.keys()) and (len(profile['lib_matches']) > 0):
-                        print("Hello")
+                        # print("Hello")
                         app_profiles[profile['appInfo']['fileName']] = []
                         used_lib = []
                         for lib in profile['lib_matches']:
                             used_lib.append({lib['libName']: lib['usedLibMethods']})
                         app_profiles[name[:-5]] = used_lib
-    print(app_profiles)
+    # print(app_profiles)
     matched_apps = []
     for root, dirs, files in os.walk(apk_files):
         for name in files:
+            print(name)
             if name[:-4] in app_profiles.keys():
                 matched_apps.append(root + '/' + name)
                 shutil.move(root + '/' + name, dest_dir + '/' + name)

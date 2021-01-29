@@ -41,20 +41,20 @@ def obfuscated(profiles: str, apk_files: str, dest_dir: str) -> list:
     return matched_apps
 
 def unobfuscated(namelist: str, apk_files: str, dest_dir: str) -> list:
-    app_profiles = {}
+    app_names = []
     with open('write_data_apk_name.txt','r') as f:
         for line in f:
             line = line.strip().split('\\')
             app_name = line[-1].split(' ')[0]
-            print(app_name)
+            app_names.append(app_name)
     # # print(app_profiles)
-    # matched_apps = []
-    # for root, dirs, files in os.walk(apk_files):
-    #     for name in files:
-    #         if name[:-4] in app_profiles.keys():
-    #             matched_apps.append(root + '/' + name)
-    #             shutil.move(root + '/' + name, dest_dir + '/' + name)
-    # return matched_apps
+    matched_apps = []
+    for root, dirs, files in os.walk(apk_files):
+        for name in files:
+            if name in app_names:
+                matched_apps.append(root + '/' + name)
+                shutil.move(root + '/' + name, dest_dir + '/' + name)
+    return matched_apps
 
 if __name__ == '__main__':
     fire.Fire()

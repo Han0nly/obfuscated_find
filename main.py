@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 """
 -------------------------------------------------
-@File    : test.py
+@File    : main.py
 @Time    : 2021/1/28 10:01 下午
 @Author  : Han0nly
 @Github  : https://github.com/Han0nly
@@ -13,6 +13,7 @@ import json
 import shutil
 import fire
 import os
+import re
 
 
 def obfuscated(profiles: str, apk_files: str, dest_dir: str) -> list:
@@ -40,9 +41,10 @@ def obfuscated(profiles: str, apk_files: str, dest_dir: str) -> list:
                 shutil.move(root + '/' + name, dest_dir + '/' + name)
     return matched_apps
 
-def unobfuscated(namelist: str, apk_files: str, dest_dir: str) -> list:
+
+def unobfuscated(apk_files: str, dest_dir: str) -> list:
     app_names = []
-    with open('write_data_apk_name.txt','r') as f:
+    with open('write_data_apk_name.txt', 'r') as f:
         for line in f:
             line = line.strip().split('\\')
             app_name = line[-1].split(' ')[0]
@@ -55,6 +57,26 @@ def unobfuscated(namelist: str, apk_files: str, dest_dir: str) -> list:
                 matched_apps.append(root + '/' + name)
                 shutil.move(root + '/' + name, dest_dir + '/' + name)
     return matched_apps
+
+
+def location_related(namelist: str, apk_files: str, dest_dir: str) -> list:
+    app_names = []
+    with open('write_data_apk_name.txt', 'r') as f:
+        for line in f:
+            line = line.strip().split('\\')
+            app_name = line[-1].split(' ')[0]
+            related_api = line[-1].split(' ')[1]
+            if 'location' in related_api.lower():
+                app_names.append(app_name)
+    # # print(app_profiles)
+    matched_apps = []
+    for root, dirs, files in os.walk(apk_files):
+        for name in files:
+            if name in app_names:
+                matched_apps.append(root + '/' + name)
+                shutil.move(root + '/' + name, dest_dir + '/' + name)
+    return matched_apps
+
 
 if __name__ == '__main__':
     fire.Fire()
